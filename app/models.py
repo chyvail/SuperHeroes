@@ -22,3 +22,20 @@ class Hero(db.Model, SerializerMixin):
 
     def __repr__(self):
         return f'<Hero id: {self.id} , name is {self.name} and alias is {self.super_name} >'
+
+class Power(db.Model, SerializerMixin):
+    __tablename__ = 'powers'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
+    description = db.Column(db.String)
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+    updated_at = db.Column(db.DateTime, onupdate=db.func.now())
+
+    serialize_rules = ('-hero_powers.power',)
+
+    def __repr__(self):
+        return f'<Power id: {self.id} , name is {self.name}  and description is {self.description} >'
+
+
+
