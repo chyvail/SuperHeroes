@@ -38,4 +38,19 @@ class Power(db.Model, SerializerMixin):
         return f'<Power id: {self.id} , name is {self.name}  and description is {self.description} >'
 
 
+class HeroPower(db.Model, SerializerMixin):
+    __tablename__ = 'hero_powers'
+
+    id = db.Column(db.Integer, primary_key=True)
+    strength = db.Column(db.String)
+    hero_id = db.Column(db.Integer, db.ForeignKey('heroes.id'))
+    power_id = db.Column(db.Integer, db.ForeignKey('powers.id'))
+    created_at = db.Column(db.DateTime, server_default=db.func.now())
+    updated_at = db.Column(db.DateTime, onupdate=db.func.now())
+
+    serialize_rules = ('-hero.powers', '-power.hero_powers')
+
+    def __repr__(self):
+        return f'<HeroPower id: {self.id} , strength is {self.strength} >'
+
 
