@@ -130,8 +130,43 @@ class PowersById(Resource):
         else:
             return make_response({"error" : "Power not found"}, 404)
         
-
 api.add_resource(PowersById, '/powers/<int:id>')
+
+class HeroPowers(Resource):
+
+    def get(self):
+
+        hero_powers = []
+
+        for hero_power in HeroPower.query.all():
+
+            hero_power_dict =  {
+                "id": hero_power.id,
+                "strength": hero_power.strength,
+                "hero_id": hero_power.hero_id,
+                "power_id": hero_power.power_id
+            }
+
+            hero_powers.append(hero_power_dict)
+        
+        return make_response(hero_powers, 200)
+    
+    def post(self):
+
+        new_power = HeroPower(
+            strength = request.form.get('strength'),
+            power_id = request.form.get('power_id'),
+            hero_id = request.form.get('hero_id'),
+        )
+        print(new_power.to_dict())
+
+        db.session.add(new_power)
+        db.session.commit()
+
+        return make_response(new_power, 201)
+        
+
+api.add_resource(HeroPowers, '/hero_powers')
 
 if __name__ == '__main__':
     app.run(port=5555,debug=True)
