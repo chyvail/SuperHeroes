@@ -110,7 +110,23 @@ class PowersById(Resource):
             return make_response(power_dict,200)
         else:
             return make_response({"error":"Power not found"}, 404)
+    
+    def patch(self, id):
+
+        power = Power.query.filter(Power.id == id).first()
+
+        for attr in request.form:
+            setattr(power, attr, request.form.get(attr))
+        
+        db.session.add(power)
+        db.session.commit()
+
+        power_dict = power.to_dict()
+
+        return make_response(power_dict, 200)
+        
 
 api.add_resource(PowersById, '/powers/<int:id>')
+
 if __name__ == '__main__':
     app.run(port=5555,debug=True)
