@@ -115,15 +115,20 @@ class PowersById(Resource):
 
         power = Power.query.filter(Power.id == id).first()
 
-        for attr in request.form:
-            setattr(power, attr, request.form.get(attr))
+        if power:
+
+            for attr in request.form:
+                setattr(power, attr, request.form.get(attr))
+            
+            db.session.add(power)
+            db.session.commit()
+
+            power_dict = power.to_dict()
+
+            return make_response(power_dict, 200)
         
-        db.session.add(power)
-        db.session.commit()
-
-        power_dict = power.to_dict()
-
-        return make_response(power_dict, 200)
+        else:
+            return make_response({"error" : "Power not found"}, 404)
         
 
 api.add_resource(PowersById, '/powers/<int:id>')
