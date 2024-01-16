@@ -153,17 +153,21 @@ class HeroPowers(Resource):
     
     def post(self):
 
-        new_power = HeroPower(
-            strength = request.form.get('strength'),
-            power_id = request.form.get('power_id'),
-            hero_id = request.form.get('hero_id'),
-        )
-        print(new_power.to_dict())
+        data = request.get_json()
+        strength = data['strength']
+        power_id = data['power_id']
+        hero_id = data['hero_id']
+
+        new_power = HeroPower(strength = strength, power_id = power_id, hero_id = hero_id)
 
         db.session.add(new_power)
         db.session.commit()
 
-        return make_response(new_power, 201)
+        new_power_dict = new_power.to_dict()
+
+        print(new_power_dict)
+
+        return make_response(jsonify(new_power_dict), 201)
         
 
 api.add_resource(HeroPowers, '/hero_powers')
